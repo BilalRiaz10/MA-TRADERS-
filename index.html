@@ -1,0 +1,918 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>MA TRADERS — Full HTML + Tailwind (Original style preserved)</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    
+    :root{
+      --background: 0 0% 100%;
+      --foreground: 210 20% 15%;
+
+      --card: 0 0% 100%;
+      --card-foreground: 210 20% 15%;
+
+      --popover: 0 0% 100%;
+      --popover-foreground: 210 20% 15%;
+
+      --primary: 210 100% 25%;
+      --primary-foreground: 0 0% 100%;
+
+      --primary-light: 210 100% 35%;
+      --primary-glow: 210 100% 45%;
+
+      --secondary: 142 76% 36%;
+      --secondary-foreground: 0 0% 100%;
+
+      --secondary-light: 142 76% 46%;
+
+      --muted: 210 40% 96%;
+      --muted-foreground: 215.4 16.3% 46.9%;
+
+      --accent: 39 100% 50%;
+      --accent-foreground: 210 20% 15%;
+
+      --destructive: 0 84.2% 60.2%;
+      --destructive-foreground: 210 40% 98%;
+
+      --border: 214.3 31.8% 91.4%;
+      --input: 214.3 31.8% 91.4%;
+      --ring: 210 100% 25%;
+
+      --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-light)));
+      --gradient-secondary: linear-gradient(135deg, hsl(var(--secondary)), hsl(var(--secondary-light)));
+      --gradient-hero: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--secondary)));
+      --shadow-elegant: 0 10px 30px -10px hsl(var(--primary) / 0.2);
+      --shadow-card: 0 4px 15px -5px hsl(var(--primary) / 0.1);
+      --shadow-glow: 0 0 40px hsl(var(--primary-glow) / 0.3);
+      --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+      --radius: 0.5rem;
+
+      --sidebar-background: 0 0% 98%;
+    }
+
+    .dark {
+      --background: 222.2 84% 4.9%;
+      --foreground: 210 40% 98%;
+      --card: 222.2 84% 4.9%;
+      --card-foreground: 210 40% 98%;
+      --primary: 210 40% 98%;
+      --primary-foreground: 222.2 47.4% 11.2%;
+      --muted: 217.2 32.6% 17.5%;
+      --muted-foreground: 215 20.2% 65.1%;
+    }
+
+    /* Basic mapping so Tailwind utilities + your tokens render correctly in plain HTML */
+    html,body {
+      height: 100%;
+    }
+
+    body{
+      background: hsl(var(--background));
+      color: hsl(var(--foreground));
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    }
+
+    /* Card */
+    .card {
+      background: hsl(var(--card));
+      color: hsl(var(--card-foreground));
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-card);
+      border: 1px solid hsl(var(--border));
+    }
+
+    /* Buttons (basic variants to match your ui/button) */
+    .btn {@apply inline-flex items-center justify-center gap-2 font-semibold rounded-lg transition; padding: .6rem 1rem; }
+    .btn-primary { background: hsl(var(--primary)); color: hsl(var(--primary-foreground)); }
+    .btn-outline { background: transparent; border: 1px solid hsl(var(--primary)); color: hsl(var(--primary)); }
+    .btn-ghost { background: transparent; color: inherit; border: none; }
+
+    /* Badge small */
+    .badge {
+      display:inline-block;
+      padding: .25rem .5rem;
+      border-radius:9999px;
+      font-size:.75rem;
+      font-weight:600;
+      background: hsl(var(--secondary));
+      color: hsl(var(--secondary-foreground));
+    }
+
+    /* Input / textarea */
+    .ui-input, .ui-textarea {
+      background: hsl(var(--card));
+      border: 1px solid hsl(var(--input));
+      border-radius: .375rem;
+      padding: .625rem .75rem;
+      width:100%;
+      color:inherit;
+    }
+
+    /* Muted text helpers */
+    .text-muted-foreground { color: hsl(var(--muted-foreground)); }
+    .text-primary { color: hsl(var(--primary)); }
+    .text-primary-foreground { color: hsl(var(--primary-foreground)); }
+
+    /* Small helpers to support classes containing / (escape) */
+    .bg-muted\/30 { background-color: hsl(var(--muted) / .3); }
+
+    /* utility to apply hero gradient quickly (uses your gradient token) */
+    .gradient-hero { background: var(--gradient-hero); }
+
+    /* small responsive container fallback (Tailwind container is still used for layout) */
+    .site-container { max-width: 1400px; margin: 0 auto; padding-left: 1rem; padding-right: 1rem; }
+  </style>
+<!-- INJECTED: transitions / animations / modal / cart drawer / mobile nav CSS -->
+<style>
+:root{ --transition-time: 260ms; --drawer-width: 380px; }
+.fade-up { opacity: 0; transform: translateY(10px); transition: opacity var(--transition-time) ease, transform var(--transition-time) ease; }
+.fade-up.show { opacity: 1; transform: translateY(0); }
+.modal-backdrop { position: fixed; inset: 0; display: none; align-items: center; justify-content: center; background: rgba(0,0,0,0.45); z-index: 60; }
+.modal-backdrop.show { display: flex; }
+.modal { background: hsl(var(--card)); color: hsl(var(--card-foreground)); border-radius: .6rem; padding: 1.25rem; width: 100%; max-width: 520px; box-shadow: var(--shadow-card); transform: scale(.98); opacity: 0; transition: transform var(--transition-time), opacity var(--transition-time); }
+.modal-backdrop.show .modal { transform: scale(1); opacity: 1; }
+
+.cart-drawer { position: fixed; right: calc(-1 * var(--drawer-width)); top: 0; height: 100vh; width: var(--drawer-width); background: hsl(var(--card)); box-shadow: var(--shadow-elegant); transition: right var(--transition-time) ease; z-index: 70; display:flex; flex-direction:column; }
+.cart-drawer.open { right: 0; }
+
+.cart-btn { position: relative; display: inline-flex; align-items: center; gap: .5rem; padding: .45rem .65rem; border-radius: .5rem; border: 1px solid hsl(var(--border)); background: hsl(var(--card)); }
+.cart-badge { position: absolute; top: -8px; right: -8px; background: hsl(var(--primary)); color: hsl(var(--primary-foreground)); font-weight: 700; padding: .15rem .45rem; border-radius: 9999px; font-size: .72rem; }
+
+.mobile-menu-backdrop { position: fixed; inset: 0; display: none; background: rgba(0,0,0,0.35); z-index: 65; }
+.mobile-menu-backdrop.open { display: block; }
+.mobile-nav-panel { position: fixed; left: 0; top: 0; height: 100vh; width: 280px; max-width: 85%; background: hsl(var(--card)); box-shadow: var(--shadow-card); padding: 1rem; transform: translateX(-10px); transition: transform var(--transition-time) ease; z-index: 80; }
+.mobile-menu-backdrop.open .mobile-nav-panel { transform: translateX(0); }
+
+/* small helpers */
+.hidden-md { display: none; }
+@media (max-width: 767px) {
+  .hidden-md { display: inline-flex; }
+  .md-only { display: none !important; }
+}
+@media (min-width: 768px) {
+  .hidden-md { display: none; }
+  .md-only { display: inline-flex; }
+}
+
+.qty-btn { border: 1px solid hsl(var(--border)); background: transparent; padding: .2rem .5rem; border-radius: .25rem; }
+</style>
+<!-- /INJECTED CSS -->
+
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="bg-background border-b shadow-sm">
+    <!-- Top Bar -->
+    <div class="bg-primary text-primary-foreground py-2" style="background: hsl(var(--primary)); color: hsl(var(--primary-foreground));">
+      <div class="site-container flex flex-col md:flex-row justify-between items-center text-sm">
+        <div class="flex items-center space-x-4 mb-2 md:mb-0">
+          <div class="flex items-center space-x-1">
+            <!-- phone icon -->
+            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.14A19.5 19.5 0 0 1 3.14 12.81 19.79 19.79 0 0 1 0 4.18 2 2 0 0 1 2 2h3"/></svg>
+            <span class="text-primary-foreground">+92-300-1234567</span>
+          </div>
+          <div class="flex items-center space-x-1">
+            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8l7.89 5.26a2 2 0 0 0 2.22 0L21 8M21 19H3"/></svg>
+            <span class="text-primary-foreground">info@matraders.pk</span>
+          </div>
+        </div>
+
+        <div class="flex items-center space-x-1 text-primary-foreground">
+          <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 21s-7-5.5-7-10a7 7 0 0 1 14 0c0 4.5-7 10-7 10z"/><circle cx="12" cy="11" r="2.5"/></svg>
+          <span>Lahore - Pakistan</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Navigation -->
+    <div class="site-container flex items-center justify-between py-4">
+      <div>
+        <h1 class="text-3xl font-bold text-primary" style="color: hsl(var(--primary));">MA TRADERS</h1>
+        <p class="text-sm text-muted-foreground">Premium Electrical Solutions</p>
+      </div>
+
+      <div class="flex items-center space-x-3">
+        <!-- mobile menu toggle (visible on small screens) -->
+        <button id="mobile-toggle" aria-label="Toggle menu" class="hidden-md btn btn-ghost p-2 mr-2" type="button">
+          <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+
+        <!-- desktop / larger screen nav (kept same classes for styling) -->
+        <nav id="main-nav" class="flex flex-wrap items-center space-x-6">
+
+        <a href="#home" class="hover:text-primary transition-colors">Home</a>
+        <a href="#products" class="hover:text-primary transition-colors">Products</a>
+        <a href="#about" class="hover:text-primary transition-colors">About</a>
+        <a href="#reviews" class="hover:text-primary transition-colors">Reviews</a>
+        <a href="#contact" class="hover:text-primary transition-colors">Contact</a>
+        <a href="#contact" class="btn btn-primary ml-4" style="background: hsl(var(--primary)); color: hsl(var(--primary-foreground));">Get Quote</a>
+      
+          <!-- Added Login / Sign up / Cart buttons -->
+          <button id="login-btn" class="btn btn-ghost md-only" type="button">Login</button>
+          <button id="signup-btn" class="btn btn-outline md-only" type="button">Sign Up</button>
+          <button id="cart-open-btn" class="cart-btn ml-2" type="button" aria-label="Open cart">
+            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none"><path d="M3 3h2l.4 2M7 13h10l4-8H5.4"/></svg>
+            <span class="hidden md:inline">Cart</span>
+            <span class="cart-badge" id="cart-count">0</span>
+          </button>
+        </nav>
+    </div>
+  </header>
+
+<!-- INJECTED: mobile menu panel -->
+<div id="mobile-menu-backdrop" class="mobile-menu-backdrop" aria-hidden="true">
+  <div class="mobile-nav-panel">
+    <div class="flex items-center justify-between mb-4">
+      <div>
+        <h2 class="text-xl font-bold" style="color:hsl(var(--primary));">MA TRADERS</h2>
+        <p class="text-sm text-muted-foreground">Premium Electrical Solutions</p>
+      </div>
+      <button id="mobile-close" class="btn btn-ghost" aria-label="Close menu">&times;</button>
+    </div>
+    <nav class="flex flex-col space-y-2">
+      <a href="#home" class="py-2 border-b">Home</a>
+      <a href="#products" class="py-2 border-b">Products</a>
+      <a href="#about" class="py-2 border-b">About</a>
+      <a href="#reviews" class="py-2 border-b">Reviews</a>
+      <a href="#contact" class="py-2 border-b">Contact</a>
+      <div class="pt-4 flex flex-col space-y-2">
+        <button id="mobile-login" class="btn btn-ghost w-full">Login</button>
+        <button id="mobile-signup" class="btn btn-outline w-full">Sign Up</button>
+        <button id="mobile-cart-open" class="btn cart-btn w-full">Open Cart <span class="cart-badge" id="mobile-cart-count">0</span></button>
+      </div>
+    </nav>
+  </div>
+</div>
+<!-- /INJECTED mobile menu -->
+
+
+  <!-- HERO -->
+  <section id="home" class="relative gradient-hero min-h-[80vh] flex items-center">
+    <div class="absolute inset-0 bg-black/20"></div>
+    <div class="site-container relative z-10 w-full">
+      <div class="grid md:grid-cols-2 gap-12 items-center">
+        <div class="text-white">
+          <h1 class="text-5xl md:text-6xl font-bold mb-6 leading-tight">
+            Power Solutions
+            <span class="block text-accent" style="color: hsl(var(--accent));">You Can Trust</span>
+          </h1>
+          <p class="text-xl mb-8 opacity-90">
+            Leading suppliers of premium UPS systems, power inverters, and batteries across Pakistan. Reliable power backup solutions for homes and businesses.
+          </p>
+
+          <div class="flex flex-col sm:flex-row gap-4 mb-8">
+            <a class="btn btn-primary size-lg inline-block" href="#products" style="background: hsl(var(--accent)); color: hsl(var(--accent-foreground)); padding:.8rem 1.25rem; border-radius:.5rem;">Shop Now</a>
+            <a class="btn btn-outline size-lg inline-block" href="#contact" style="border:1px solid rgba(255,255,255,.9); color: white; padding:.8rem 1.25rem; border-radius:.5rem;">Get Free Quote</a>
+          </div>
+
+          <div class="grid grid-cols-3 gap-6 pt-8 border-t border-white/20">
+            <div class="text-center">
+              <svg class="h-8 w-8 mx-auto mb-2 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 2l3 7h7l-5.5 4 2 7L12 16l-6.5 4 2-7L2 9h7z"/></svg>
+              <p class="text-sm">2 Year Warranty</p>
+            </div>
+            <div class="text-center">
+              <svg class="h-8 w-8 mx-auto mb-2 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 7h18M3 12h18M3 17h18"/></svg>
+              <p class="text-sm">Free Delivery</p>
+            </div>
+            <div class="text-center">
+              <svg class="h-8 w-8 mx-auto mb-2 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 2v6l4 2-4 2v6"/></svg>
+              <p class="text-sm">Certified Products</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="relative">
+          <!-- Replace with your hero image -->
+          <img src="/src/assets/hero-electrical.jpg" alt="Professional electrical equipment display" class="rounded-lg shadow-2xl max-w-full" onerror="this.style.opacity=.06">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRODUCTS -->
+  <section id="products" class="py-20 bg-muted/10" style="background: hsl(var(--muted));">
+    <div class="site-container">
+      <div class="text-center mb-16">
+        <h2 class="text-4xl font-bold text-foreground mb-4" style="color:hsl(var(--foreground))">Featured Products</h2>
+        <p class="text-xl text-muted-foreground max-w-2xl mx-auto">
+          Discover our range of premium electrical equipment designed for reliability and performance
+        </p>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-8">
+        <!-- Product 1 -->
+        <div class="card group overflow-hidden transition-all duration-300">
+          <div class="relative overflow-hidden">
+            <img src="/src/assets/ups-product.jpg" alt="Professional UPS 1500VA" class="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300" onerror="this.style.opacity=.06">
+            <span class="badge absolute top-4 left-4">Best Seller</span>
+          </div>
+
+          <div class="p-6">
+            <h3 class="text-xl font-semibold mb-2">Professional UPS 1500VA</h3>
+            <div class="flex items-center space-x-2 mb-3">
+              <!-- 5 stars approximation -->
+              <div class="flex items-center">
+                <svg class="h-4 w-4 text-accent fill-current" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.431L23.4 9.75l-5.6 5.448L19.335 24 12 20.013 4.665 24 6.2 15.198 0.6 9.75 8.332 8.018z"/></svg>
+                <svg class="h-4 w-4 text-accent fill-current" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.431L23.4 9.75l-5.6 5.448L19.335 24 12 20.013 4.665 24 6.2 15.198 0.6 9.75 8.332 8.018z"/></svg>
+                <svg class="h-4 w-4 text-accent fill-current" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.431L23.4 9.75l-5.6 5.448L19.335 24 12 20.013 4.665 24 6.2 15.198 0.6 9.75 8.332 8.018z"/></svg>
+                <svg class="h-4 w-4 text-accent fill-current" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.431L23.4 9.75l-5.6 5.448L19.335 24 12 20.013 4.665 24 6.2 15.198 0.6 9.75 8.332 8.018z"/></svg>
+                <svg class="h-4 w-4 text-accent fill-current" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.431L23.4 9.75l-5.6 5.448L19.335 24 12 20.013 4.665 24 6.2 15.198 0.6 9.75 8.332 8.018z"/></svg>
+              </div>
+              <span class="text-sm text-muted-foreground">(124 reviews)</span>
+            </div>
+
+            <div class="mb-4">
+              <div class="flex items-center space-x-2 mb-2">
+                <span class="text-2xl font-bold text-primary" style="color:hsl(var(--primary))">₨ 25,000</span>
+                <span class="text-sm text-muted-foreground line-through">₨ 28,000</span>
+              </div>
+            </div>
+
+            <ul class="text-sm text-muted-foreground mb-6 space-y-1">
+              <li class="flex items-center"><span class="w-2 h-2 bg-secondary rounded-full mr-2" style="background:hsl(var(--secondary));"></span>Pure Sine Wave</li>
+              <li class="flex items-center"><span class="w-2 h-2 bg-secondary rounded-full mr-2" style="background:hsl(var(--secondary));"></span>LCD Display</li>
+              <li class="flex items-center"><span class="w-2 h-2 bg-secondary rounded-full mr-2" style="background:hsl(var(--secondary));"></span>Auto Voltage Regulation</li>
+              <li class="flex items-center"><span class="w-2 h-2 bg-secondary rounded-full mr-2" style="background:hsl(var(--secondary));"></span>Battery Backup: 2-4 Hours</li>
+            </ul>
+
+            <div class="flex space-x-2">
+              <button class="btn btn-primary flex-1 add-to-cart" data-id="p1" data-name="Professional UPS 1500VA" data-price="25000" style="background:hsl(var(--primary)); color:hsl(var(--primary-foreground));">
+                <svg class="h-4 w-4 mr-2" viewBox="0 0 24 24" fill="none"><path d="M3 3h2l.4 2M7 13h10l4-8H5.4"/></svg>
+                Add to Cart
+              </button>
+              <button class="btn btn-outline">Details</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Product 2: inverter -->
+        <div class="card group overflow-hidden transition-all duration-300">
+          <div class="relative overflow-hidden">
+            <img src="/src/assets/inverter-product.jpg" alt="Pure Sine Wave Inverter 2000W" class="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300" onerror="this.style.opacity=.06">
+            <span class="badge absolute top-4 left-4">Best Seller</span>
+          </div>
+
+          <div class="p-6">
+            <h3 class="text-xl font-semibold mb-2">Pure Sine Wave Inverter 2000W</h3>
+            <div class="flex items-center space-x-2 mb-3">
+              <div class="flex items-center">
+                <svg class="h-4 w-4 text-accent fill-current" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.431L23.4 9.75l-5.6 5.448L19.335 24 12 20.013 4.665 24 6.2 15.198 0.6 9.75 8.332 8.018z"/></svg>
+                <svg class="h-4 w-4 text-accent fill-current" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.431L23.4 9.75l-5.6 5.448L19.335 24 12 20.013 4.665 24 6.2 15.198 0.6 9.75 8.332 8.018z"/></svg>
+                <svg class="h-4 w-4 text-accent fill-current" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.431L23.4 9.75l-5.6 5.448L19.335 24 12 20.013 4.665 24 6.2 15.198 0.6 9.75 8.332 8.018z"/></svg>
+                <svg class="h-4 w-4 text-accent fill-current" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.431L23.4 9.75l-5.6 5.448L19.335 24 12 20.013 4.665 24 6.2 15.198 0.6 9.75 8.332 8.018z"/></svg>
+                <svg class="h-4 w-4 text-gray-300 fill-current" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.431L23.4 9.75l-5.6 5.448L19.335 24 12 20.013 4.665 24 6.2 15.198 0.6 9.75 8.332 8.018z"/></svg>
+              </div>
+              <span class="text-sm text-muted-foreground">(89 reviews)</span>
+            </div>
+
+            <div class="mb-4">
+              <div class="flex items-center space-x-2 mb-2">
+                <span class="text-2xl font-bold text-primary" style="color:hsl(var(--primary))">₨ 18,500</span>
+                <span class="text-sm text-muted-foreground line-through">₨ 21,000</span>
+              </div>
+            </div>
+
+            <ul class="text-sm text-muted-foreground mb-6 space-y-1">
+              <li class="flex items-center"><span class="w-2 h-2 bg-secondary rounded-full mr-2" style="background:hsl(var(--secondary));"></span>Pure Sine Wave</li>
+              <li class="flex items-center"><span class="w-2 h-2 bg-secondary rounded-full mr-2" style="background:hsl(var(--secondary));"></span>Overload Protection</li>
+              <li class="flex items-center"><span class="w-2 h-2 bg-secondary rounded-full mr-2" style="background:hsl(var(--secondary));"></span>LED Indicators</li>
+              <li class="flex items-center"><span class="w-2 h-2 bg-secondary rounded-full mr-2" style="background:hsl(var(--secondary));"></span>Silent Operation</li>
+            </ul>
+
+            <div class="flex space-x-2">
+              <button class="btn btn-primary flex-1 add-to-cart" data-id="p2" data-name="Pure Sine Wave Inverter 2000W" data-price="18500" style="background:hsl(var(--primary)); color:hsl(var(--primary-foreground));">
+                <svg class="h-4 w-4 mr-2" viewBox="0 0 24 24" fill="none"><path d="M3 3h2l.4 2M7 13h10l4-8H5.4"/></svg>
+                Add to Cart
+              </button>
+              <button class="btn btn-outline">Details</button>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Product 3: battery -->
+        <div class="card group overflow-hidden transition-all duration-300">
+          <div class="relative overflow-hidden">
+            <img src="/src/assets/battery-product.jpg" alt="Deep Cycle Battery 150AH" class="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300" onerror="this.style.opacity=.06">
+            <span class="badge absolute top-4 left-4">Best Seller</span>
+          </div>
+
+          <div class="p-6">
+            <h3 class="text-xl font-semibold mb-2">Deep Cycle Battery 150AH</h3>
+            <div class="flex items-center space-x-2 mb-3">
+              <div class="flex items-center">
+                <svg class="h-4 w-4 text-accent fill-current" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.431L23.4 9.75l-5.6 5.448L19.335 24 12 20.013 4.665 24 6.2 15.198 0.6 9.75 8.332 8.018z"/></svg>
+                <svg class="h-4 w-4 text-accent fill-current" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.431L23.4 9.75l-5.6 5.448L19.335 24 12 20.013 4.665 24 6.2 15.198 0.6 9.75 8.332 8.018z"/></svg>
+                <svg class="h-4 w-4 text-accent fill-current" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.431L23.4 9.75l-5.6 5.448L19.335 24 12 20.013 4.665 24 6.2 15.198 0.6 9.75 8.332 8.018z"/></svg>
+                <svg class="h-4 w-4 text-accent fill-current" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.431L23.4 9.75l-5.6 5.448L19.335 24 12 20.013 4.665 24 6.2 15.198 0.6 9.75 8.332 8.018z"/></svg>
+                <svg class="h-4 w-4 text-accent fill-current" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.431L23.4 9.75l-5.6 5.448L19.335 24 12 20.013 4.665 24 6.2 15.198 0.6 9.75 8.332 8.018z"/></svg>
+              </div>
+              <span class="text-sm text-muted-foreground">(156 reviews)</span>
+            </div>
+
+            <div class="mb-4">
+              <div class="flex items-center space-x-2 mb-2">
+                <span class="text-2xl font-bold text-primary" style="color:hsl(var(--primary))">₨ 15,000</span>
+                <span class="text-sm text-muted-foreground line-through">₨ 17,500</span>
+              </div>
+            </div>
+
+            <ul class="text-sm text-muted-foreground mb-6 space-y-1">
+              <li class="flex items-center"><span class="w-2 h-2 bg-secondary rounded-full mr-2" style="background:hsl(var(--secondary));"></span>Maintenance Free</li>
+              <li class="flex items-center"><span class="w-2 h-2 bg-secondary rounded-full mr-2" style="background:hsl(var(--secondary));"></span>Long Life Cycle</li>
+              <li class="flex items-center"><span class="w-2 h-2 bg-secondary rounded-full mr-2" style="background:hsl(var(--secondary));"></span>Quick Charge</li>
+              <li class="flex items-center"><span class="w-2 h-2 bg-secondary rounded-full mr-2" style="background:hsl(var(--secondary));"></span>2 Year Warranty</li>
+            </ul>
+
+            <div class="flex space-x-2">
+              <button class="btn btn-primary flex-1 add-to-cart" data-id="p3" data-name="Deep Cycle Battery 150AH" data-price="15000" style="background:hsl(var(--primary)); color:hsl(var(--primary-foreground));">
+                <svg class="h-4 w-4 mr-2" viewBox="0 0 24 24" fill="none"><path d="M3 3h2l.4 2M7 13h10l4-8H5.4"/></svg>
+                Add to Cart
+              </button>
+              <button class="btn btn-outline">Details</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="text-center mt-12">
+        <button class="btn btn-outline border-primary text-primary hover:bg-primary hover:text-primary-foreground" style="border-color:hsl(var(--primary)); color:hsl(var(--primary)); padding:.75rem 1.25rem;">View All Products</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <section id="reviews" class="py-20 bg-background">
+    <div class="site-container">
+      <div class="text-center mb-16">
+        <h2 class="text-4xl font-bold text-foreground mb-4">What Our Customers Say</h2>
+        <p class="text-xl text-muted-foreground max-w-2xl mx-auto">Join thousands of satisfied customers across Pakistan who trust MA Traders for their power solutions</p>
+      </div>
+
+      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <!-- Testimonial cards (4) -->
+        <div class="card relative hover:shadow-lg transition-shadow duration-300 p-6">
+          <svg class="h-8 w-8 text-primary/20 mb-4" viewBox="0 0 24 24" fill="none"><path d="M21 19V5a2 2 0 0 0-2-2H5"/></svg>
+          <div class="flex items-center mb-4">
+            <svg class="h-4 w-4 text-accent fill-current" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.431L23.4 9.75l-5.6 5.448L19.335 24 12 20.013 4.665 24 6.2 15.198 0.6 9.75 8.332 8.018z"/></svg>
+            <svg class="h-4 w-4 text-accent fill-current" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.431L23.4 9.75l-5.6 5.448L19.335 24 12 20.013 4.665 24 6.2 15.198 0.6 9.75 8.332 8.018z"/></svg>
+            <svg class="h-4 w-4 text-accent fill-current" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.431L23.4 9.75l-5.6 5.448L19.335 24 12 20.013 4.665 24 6.2 15.198 0.6 9.75 8.332 8.018z"/></svg>
+            <svg class="h-4 w-4 text-accent fill-current" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.431L23.4 9.75l-5.6 5.448L19.335 24 12 20.013 4.665 24 6.2 15.198 0.6 9.75 8.332 8.018z"/></svg>
+            <svg class="h-4 w-4 text-accent fill-current" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.431L23.4 9.75l-5.6 5.448L19.335 24 12 20.013 4.665 24 6.2 15.198 0.6 9.75 8.332 8.018z"/></svg>
+          </div>
+
+          <p class="text-muted-foreground mb-6 italic">"Excellent service! The UPS system has been working perfectly for 8 months."</p>
+
+          <div class="border-t pt-4">
+            <h4 class="font-semibold text-foreground">Ahmed Khan</h4>
+            <p class="text-sm text-muted-foreground">Electronics Shop Owner — Karachi</p>
+          </div>
+        </div>
+
+        <div class="card relative hover:shadow-lg transition-shadow duration-300 p-6">
+          <div class="flex items-center mb-4">
+            <svg class="h-4 w-4 text-accent fill-current" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.431L23.4 9.75l-5.6 5.448L19.335 24 12 20.013 4.665 24 6.2 15.198 0.6 9.75 8.332 8.018z"/></svg>
+            <svg class="h-4 w-4 text-accent fill-current" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.431L23.4 9.75l-5.6 5.448L19.335 24 12 20.013 4.665 24 6.2 15.198 0.6 9.75 8.332 8.018z"/></svg>
+            <svg class="h-4 w-4 text-accent fill-current" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.431L23.4 9.75l-5.6 5.448L19.335 24 12 20.013 4.665 24 6.2 15.198 0.6 9.75 8.332 8.018z"/></svg>
+            <svg class="h-4 w-4 text-accent fill-current" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.431L23.4 9.75l-5.6 5.448L19.335 24 12 20.013 4.665 24 6.2 15.198 0.6 9.75 8.332 8.018z"/></svg>
+            <svg class="h-4 w-4 text-accent fill-current" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.431L23.4 9.75l-5.6 5.448L19.335 24 12 20.013 4.665 24 6.2 15.198 0.6 9.75 8.332 8.018z"/></svg>
+          </div>
+
+          <p class="text-muted-foreground mb-6 italic">"MA Traders provided the best inverter solution for our home. Great customer support!"</p>
+
+          <div class="border-t pt-4">
+            <h4 class="font-semibold text-foreground">Fatima Sheikh</h4>
+            <p class="text-sm text-muted-foreground">Homeowner — Lahore</p>
+          </div>
+        </div>
+
+        <div class="card relative hover:shadow-lg transition-shadow duration-300 p-6">
+          <div class="flex items-center mb-4">
+            <svg class="h-4 w-4 text-accent fill-current" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.431L23.4 9.75l-5.6 5.448L19.335 24 12 20.013 4.665 24 6.2 15.198 0.6 9.75 8.332 8.018z"/></svg>
+            <svg class="h-4 w-4 text-accent fill-current" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.431L23.4 9.75l-5.6 5.448L19.335 24 12 20.013 4.665 24 6.2 15.198 0.6 9.75 8.332 8.018z"/></svg>
+            <svg class="h-4 w-4 text-accent fill-current" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.431L23.4 9.75l-5.6 5.448L19.335 24 12 20.013 4.665 24 6.2 15.198 0.6 9.75 8.332 8.018z"/></svg>
+            <svg class="h-4 w-4 text-accent fill-current" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.431L23.4 9.75l-5.6 5.448L19.335 24 12 20.013 4.665 24 6.2 15.198 0.6 9.75 8.332 8.018z"/></svg>
+            <svg class="h-4 w-4 text-accent fill-current" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.431L23.4 9.75l-5.6 5.448L19.335 24 12 20.013 4.665 24 6.2 15.198 0.6 9.75 8.332 8.018z"/></svg>
+          </div>
+
+          <p class="text-muted-foreground mb-6 italic">"Professional team with quality products. Excellent after-sales service."</p>
+
+          <div class="border-t pt-4">
+            <h4 class="font-semibold text-foreground">Muhammad Ali</h4>
+            <p class="text-sm text-muted-foreground">Office Manager — Islamabad</p>
+          </div>
+        </div>
+
+        <div class="card relative hover:shadow-lg transition-shadow duration-300 p-6">
+          <div class="flex items-center mb-4">
+            <svg class="h-4 w-4 text-accent fill-current" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.431L23.4 9.75l-5.6 5.448L19.335 24 12 20.013 4.665 24 6.2 15.198 0.6 9.75 8.332 8.018z"/></svg>
+            <svg class="h-4 w-4 text-accent fill-current" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.431L23.4 9.75l-5.6 5.448L19.335 24 12 20.013 4.665 24 6.2 15.198 0.6 9.75 8.332 8.018z"/></svg>
+            <svg class="h-4 w-4 text-accent fill-current" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.431L23.4 9.75l-5.6 5.448L19.335 24 12 20.013 4.665 24 6.2 15.198 0.6 9.75 8.332 8.018z"/></svg>
+            <svg class="h-4 w-4 text-accent fill-current" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.431L23.4 9.75l-5.6 5.448L19.335 24 12 20.013 4.665 24 6.2 15.198 0.6 9.75 8.332 8.018z"/></svg>
+            <svg class="h-4 w-4 text-accent fill-current" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.431L23.4 9.75l-5.6 5.448L19.335 24 12 20.013 4.665 24 6.2 15.198 0.6 9.75 8.332 8.018z"/></svg>
+          </div>
+
+          <p class="text-muted-foreground mb-6 italic">"Very satisfied with the UPS purchase. Fast delivery and good warranty."</p>
+
+          <div class="border-t pt-4">
+            <h4 class="font-semibold text-foreground">Aisha Malik</h4>
+            <p class="text-sm text-muted-foreground">Small Business Owner — Faisalabad</p>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="text-center mt-12">
+        <div class="inline-flex items-center space-x-2 bg-secondary/10 px-6 py-3 rounded-full" style="background: hsl(var(--secondary) / 0.1);">
+          <svg class="h-5 w-5 text-accent fill-current" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.431L23.4 9.75l-5.6 5.448L19.335 24 12 20.013 4.665 24 6.2 15.198 0.6 9.75 8.332 8.018z"/></svg>
+          <span class="text-lg font-semibold">4.8/5 Average Rating</span>
+          <span class="text-muted-foreground">• 500+ Reviews</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact" class="py-20" style="background: hsl(var(--muted) / 0.3);">
+    <div class="site-container">
+      <div class="text-center mb-16">
+        <h2 class="text-4xl font-bold text-foreground mb-4">Get In Touch</h2>
+        <p class="text-xl text-muted-foreground max-w-2xl mx-auto">Ready to power up your business or home? Contact us for expert advice and competitive quotes</p>
+      </div>
+
+      <div class="grid lg:grid-cols-3 gap-8">
+        <!-- Contact Information -->
+        <div class="lg:col-span-1 space-y-6">
+          <div class="card p-4">
+            <div class="flex items-center space-x-2 text-primary">
+              <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.14A19.5 19.5 0 0 1 3.14 12.81"/></svg>
+              <h3 class="font-semibold">Phone Numbers</h3>
+            </div>
+            <div class="mt-2 space-y-1">
+              <p class="text-muted-foreground">Main Office: +92-21-12345678</p>
+              <p class="text-muted-foreground">Mobile: +92-300-1234567</p>
+              <p class="text-muted-foreground">WhatsApp: +92-333-1234567</p>
+            </div>
+          </div>
+
+          <div class="card p-4">
+            <div class="flex items-center space-x-2 text-primary">
+              <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 8l7.89 5.26a2 2 0 0 0 2.22 0L21 8"/></svg>
+              <h3 class="font-semibold">Email</h3>
+            </div>
+            <div class="mt-2">
+              <p class="text-muted-foreground">info@matraders.pk</p>
+              <p class="text-muted-foreground">sales@matraders.pk</p>
+            </div>
+          </div>
+
+          <div class="card p-4">
+            <div class="flex items-center space-x-2 text-primary">
+              <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 21C12 21 5 13.5 5 9a7 7 0 0114 0c0 4.5-7 12-7 12z"/><circle cx="12" cy="9" r="2.5"/></svg>
+              <h3 class="font-semibold">Locations</h3>
+            </div>
+            <div class="mt-2 space-y-1">
+              <p class="text-muted-foreground">Main Office: Lahore</p>
+              <p class="text-muted-foreground">Address: Allama Iqbal Town </p>
+      
+            </div>
+          </div>
+
+          <div class="card p-4">
+            <div class="flex items-center space-x-2 text-primary">
+              <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 6v6l4 2"/></svg>
+              <h3 class="font-semibold">Business Hours</h3>
+            </div>
+            <div class="mt-2">
+              <p class="text-muted-foreground">Mon-Sat: 9:00 AM - 8:00 PM</p>
+              <p class="text-muted-foreground">Sunday: 10:00 AM - 6:00 PM</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Contact Form -->
+        <div class="lg:col-span-2">
+          <div class="card p-6">
+            <h3 class="text-2xl font-semibold mb-4">Send Us a Message</h3>
+            <form class="space-y-6" onsubmit="event.preventDefault(); alert('Form demo — integrate your endpoint');">
+              <div class="grid md:grid-cols-2 gap-4">
+                <input class="ui-input" type="text" placeholder="Your Name" />
+                <input class="ui-input" type="email" placeholder="Your Email" />
+              </div>
+
+              <div class="grid md:grid-cols-2 gap-4">
+                <input class="ui-input" type="text" placeholder="Phone Number" />
+                <input class="ui-input" type="text" placeholder="City" />
+              </div>
+
+              <input class="ui-input" type="text" placeholder="Subject" />
+              <textarea class="ui-textarea" placeholder="Your Message" rows="5"></textarea>
+
+              <div class="flex items-center justify-start">
+                <button class="btn btn-primary" style="background:hsl(var(--primary)); color:hsl(var(--primary-foreground));">Send Message</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- Social & Brand -->
+      <div class="mt-16 pt-8 border-t">
+        <div class="flex flex-col md:flex-row justify-between items-center">
+          <div class="mb-6 md:mb-0">
+            <h3 class="text-2xl font-bold text-primary mb-2" style="color:hsl(var(--primary));">MA TRADERS</h3>
+            <p class="text-muted-foreground">Your trusted partner for premium electrical solutions</p>
+          </div>
+
+          <div class="flex items-center space-x-4">
+            <span class="text-muted-foreground">Follow us:</span>
+            <a class="btn btn-ghost p-2 border rounded-full" href="#" aria-label="facebook" style="border-color: hsl(var(--border));">
+              <svg class="h-4 w-4" viewBox="0 0 24 24"><path fill="currentColor" d="M22 12a10 10 0 10-11.5 9.9v-7h-2v-3h2v-2c0-2 1.2-3 3-3 .9 0 2 .2 2 .2v2h-1c-1 0-1.3.6-1.3 1.2v1.6h2.5l-.4 3h-2.1v7A10 10 0 0022 12"/></svg>
+            </a>
+            <a class="btn btn-ghost p-2 border rounded-full" href="#" aria-label="instagram" style="border-color: hsl(var(--border));">
+              <svg class="h-4 w-4" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2.2c3.2 0 3.6 0 4.9.1 1.2.1 2 .2 2.5.4a5 5 0 011.8 1.2 5 5 0 011.2 1.8c.2.5.3 1.3.4 2.5.1 1.3.1 1.7.1 4.9s0 3.6-.1 4.9c-.1 1.2-.2 2-.4 2.5a5 5 0 01-1.2 1.8 5 5 0 01-1.8 1.2c-.5.2-1.3.3-2.5.4-1.3.1-1.7.1-4.9.1s-3.6 0-4.9-.1c-1.2-.1-2-.2-2.5-.4a5 5 0 01-1.8-1.2 5 5 0 01-1.2-1.8c-.2-.5-.3-1.3-.4-2.5-.1-1.3-.1-1.7-.1-4.9s0-3.6.1-4.9c.1-1.2.2-2 .4-2.5a5 5 0 011.2-1.8A5 5 0 015.6 2.7c.5-.2 1.3-.3 2.5-.4C9.4 2.2 9.8 2.2 13 2.2zm0 1.8c-3.1 0-3.5 0-4.7.1-1 .1-1.6.2-2 .3-.5.2-.8.4-1.1.7-.3.3-.5.6-.7 1.1-.1.4-.2 1-.3 2 0 1.2-.1 1.6-.1 4.7s0 3.5.1 4.7c.1 1 .2 1.6.3 2 .2.5.4.8.7 1.1.3.3.6.5 1.1.7.4.1 1 .2 2 .3 1.2.1 1.6.1 4.7.1s3.5 0 4.7-.1c1-.1 1.6-.2 2-.3.5-.2.8-.4 1.1-.7.3-.3.5-.6.7-1.1.1-.4.2-1 .3-2 .1-1.2.1-1.6.1-4.7s0-3.5-.1-4.7c-.1-1-.2-1.6-.3-2a2.8 2.8 0 00-.7-1.1 2.8 2.8 0 00-1.1-.7c-.4-.1-1-.2-2-.3-1.2-.1-1.6-.1-4.7-.1z"/></svg>
+            </a>
+            <a class="btn btn-ghost p-2 border rounded-full" href="#" aria-label="linkedin" style="border-color: hsl(var(--border));">
+              <svg class="h-4 w-4" viewBox="0 0 24 24"><path fill="currentColor" d="M16 8a6 6 0 01-9.33 5 6 6 0 0110.66-5z"/><path fill="currentColor" d="M2 3h20v18H2z"/></svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="bg-primary text-primary-foreground py-12" style="background:hsl(var(--primary)); color:hsl(var(--primary-foreground));">
+    <div class="site-container">
+      <div class="grid md:grid-cols-4 gap-8">
+        <div>
+          <h3 class="text-2xl font-bold mb-4">MA TRADERS</h3>
+          <p class="text-primary-foreground/80 mb-4">Pakistan's leading supplier of premium UPS systems, inverters, and batteries. Quality electrical solutions for homes and businesses.</p>
+          <div class="flex space-x-2">
+            <a class="btn btn-ghost text-primary-foreground hover:text-accent" href="#"><svg class="h-4 w-4" viewBox="0 0 24 24"><path fill="currentColor" d="M22 12a10 10 0 10-11.5 9.9v-7h-2v-3h2v-2c0-2 1.2-3 3-3 .9 0 2 .2 2 .2v2h-1c-1 0-1.3.6-1.3 1.2v1.6h2.5l-.4 3h-2.1v7A10 10 0 0022 12"/></svg></a>
+            <a class="btn btn-ghost text-primary-foreground hover:text-accent" href="#"><svg class="h-4 w-4" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2.2c3.2 0 3.6 0 4.9.1 1.2.1 2 .2 2.5.4a5 5 0 011.8 1.2 5 5 0 011.2 1.8c.2.5.3 1.3.4 2.5.1 1.3.1 1.7.1 4.9s0 3.6-.1 4.9c-.1 1.2-.2 2-.4 2.5a5 5 0 01-1.2 1.8 5 5 0 01-1.8 1.2c-.5.2-1.3.3-2.5.4-1.3.1-1.7.1-4.9.1s-3.6 0-4.9-.1c-1.2-.1-2-.2-2.5-.4a5 5 0 01-1.8-1.2 5 5 0 01-1.2-1.8c-.2-.5-.3-1.3-.4-2.5-.1-1.3-.1-1.7-.1-4.9s0-3.6.1-4.9c.1-1.2.2-2 .4-2.5a5 5 0 011.2-1.8A5 5 0 015.6 2.7c.5-.2 1.3-.3 2.5-.4C9.4 2.2 9.8 2.2 13 2.2zm0 1.8c-3.1 0-3.5 0-4.7.1-1 .1-1.6.2-2 .3-.5.2-.8.4-1.1.7-.3.3-.5.6-.7 1.1-.1.4-.2 1-.3 2 0 1.2-.1 1.6-.1 4.7s0 3.5.1 4.7c.1 1 .2 1.6.3 2 .2.5.4.8.7 1.1.3.3.6.5 1.1.7.4.1 1 .2 2 .3 1.2.1 1.6.1 4.7.1s3.5 0 4.7-.1c1-.1 1.6-.2 2-.3.5-.2.8-.4 1.1-.7.3-.3.5-.6.7-1.1.1-.4.2-1 .3-2 .1-1.2.1-1.6.1-4.7s0-3.5-.1-4.7c-.1-1-.2-1.6-.3-2a2.8 2.8 0 00-.7-1.1 2.8 2.8 0 00-1.1-.7c-.4-.1-1-.2-2-.3-1.2-.1-1.6-.1-4.7-.1z"/></svg></a>
+            <a class="btn btn-ghost text-primary-foreground hover:text-accent" href="#"><svg class="h-4 w-4" viewBox="0 0 24 24"><path fill="currentColor" d="M16 8a6 6 0 01-9.33 5 6 6 0 0110.66-5z"/><path fill="currentColor" d="M2 3h20v18H2z"/></svg></a>
+          </div>
+        </div>
+
+        <div>
+          <h4 class="text-lg font-semibold mb-4">Quick Links</h4>
+          <ul class="space-y-2 text-primary-foreground/80">
+            <li><a href="#home" class="hover:text-accent transition-colors">Home</a></li>
+            <li><a href="#products" class="hover:text-accent transition-colors">Products</a></li>
+            <li><a href="#about" class="hover:text-accent transition-colors">About Us</a></li>
+            <li><a href="#reviews" class="hover:text-accent transition-colors">Reviews</a></li>
+            <li><a href="#contact" class="hover:text-accent transition-colors">Contact</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="text-lg font-semibold mb-4">Products</h4>
+          <ul class="space-y-2 text-primary-foreground/80">
+            <li><a href="#" class="hover:text-accent transition-colors">UPS Systems</a></li>
+            <li><a href="#" class="hover:text-accent transition-colors">Power Inverters</a></li>
+            <li><a href="#" class="hover:text-accent transition-colors">Batteries</a></li>
+            <li><a href="#" class="hover:text-accent transition-colors">Solar Solutions</a></li>
+            <li><a href="#" class="hover:text-accent transition-colors">Accessories</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="text-lg font-semibold mb-4">Contact Info</h4>
+          <div class="space-y-3 text-primary-foreground/80">
+            <div class="flex items-center space-x-2">
+              <svg class="h-4 w-4" viewBox="0 0 24 24"><path fill="currentColor" d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.14A19.5 19.5 0 0 1 3.14 12.81"/></svg>
+              <span>+92-300-1234567</span>
+            </div>
+            <div class="flex items-center space-x-2">
+              <svg class="h-4 w-4" viewBox="0 0 24 24"><path fill="currentColor" d="M3 8l7.89 5.26a2 2 0 0 0 2.22 0L21 8"/></svg>
+              <span>info@matraders.pk</span>
+            </div>
+            <div class="flex items-center space-x-2">
+              <svg class="h-4 w-4" viewBox="0 0 24 24"><path fill="currentColor" d="M12 21C12 21 5 13.5 5 9a7 7 0 0114 0c0 4.5-7 12-7 12z"/></svg>
+              <span>Karachi, Pakistan</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="border-t border-primary-foreground/20 mt-8 pt-8 text-center text-primary-foreground/80" style="border-top-color: rgba(255,255,255,.12);">
+        <p>&copy; 2024 MA Traders. All rights reserved. | Designed for excellence in electrical solutions</p>
+      </div>
+    </div>
+  </footer>
+
+
+<!-- INJECTED: Cart drawer (static) -->
+<aside id="cart-drawer" class="cart-drawer" aria-hidden="true">
+  <div class="p-4 flex items-center justify-between border-b">
+    <h3 class="text-lg font-semibold">Your Cart</h3>
+    <div>
+      <button id="clear-cart" class="btn btn-ghost mr-2">Clear</button>
+      <button id="close-cart" class="btn btn-ghost">Close</button>
+    </div>
+  </div>
+  <div id="cart-items" class="p-4 overflow-auto" style="flex:1 1 auto;"></div>
+  <div class="p-4 border-t">
+    <div class="flex justify-between items-center">
+      <strong class="text-lg">Total</strong>
+      <span id="cart-total">₨ 0</span>
+    </div>
+    <div class="mt-4">
+      <button id="checkout-btn" class="btn btn-primary w-full">Checkout</button>
+    </div>
+  </div>
+</aside>
+<!-- /INJECTED cart drawer -->
+
+
+<!-- INJECTED: Login & Signup Modals -->
+<div id="modal-login" class="modal-backdrop" aria-hidden="true">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="login-title">
+    <h3 id="login-title" class="text-lg font-semibold mb-2">Login</h3>
+    <form id="login-form" class="space-y-3" onsubmit="event.preventDefault(); alert('Demo login - integrate backend');">
+      <input class="ui-input" placeholder="Email" type="email" required />
+      <input class="ui-input" placeholder="Password" type="password" required />
+      <div class="flex items-center justify-between">
+        <button type="submit" class="btn btn-primary">Login</button>
+        <button type="button" id="login-close" class="btn btn-ghost">Close</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div id="modal-signup" class="modal-backdrop" aria-hidden="true">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="signup-title">
+    <h3 id="signup-title" class="text-lg font-semibold mb-2">Sign up</h3>
+    <form id="signup-form" class="space-y-3" onsubmit="event.preventDefault(); alert('Demo signup - integrate backend');">
+      <input class="ui-input" placeholder="Full name" type="text" required />
+      <input class="ui-input" placeholder="Email" type="email" required />
+      <input class="ui-input" placeholder="Password" type="password" required />
+      <div class="flex items-center justify-between">
+        <button type="submit" class="btn btn-primary">Create Account</button>
+        <button type="button" id="signup-close" class="btn btn-ghost">Close</button>
+      </div>
+    </form>
+  </div>
+</div>
+<!-- /INJECTED modals -->
+
+
+<!-- INJECTED: JS for mobile nav, cart, modals, animations -->
+<script>
+(function(){
+  /* Utilities */
+  const $ = (s, root=document) => root.querySelector(s);
+  const $$ = (s, root=document) => Array.from(root.querySelectorAll(s));
+
+  /* Mobile menu */
+  const mobileToggle = $('#mobile-toggle');
+  const mobileBackdrop = document.getElementById('mobile-menu-backdrop');
+  const mobileClose = document.getElementById('mobile-close');
+  const mobileCartOpen = document.getElementById('mobile-cart-open');
+  const mobileLogin = document.getElementById('mobile-login');
+  const mobileSignup = document.getElementById('mobile-signup');
+
+  function openMobileMenu(){ mobileBackdrop.classList.add('open'); }
+  function closeMobileMenu(){ mobileBackdrop.classList.remove('open'); }
+
+  if(mobileToggle) mobileToggle.addEventListener('click', openMobileMenu);
+  if(mobileClose) mobileClose.addEventListener('click', closeMobileMenu);
+  if(mobileBackdrop) mobileBackdrop.addEventListener('click', function(e){ if(e.target === mobileBackdrop) closeMobileMenu(); });
+
+  /* Cart drawer and logic */
+  const cartBtn = document.getElementById('cart-open-btn');
+  const cartDrawer = document.getElementById('cart-drawer');
+  const cartCountEls = [document.getElementById('cart-count'), document.getElementById('mobile-cart-count'), document.getElementById('mobile-cart-count')];
+  const cartItemsContainer = document.getElementById('cart-items');
+  const cartTotalEl = document.getElementById('cart-total');
+  const closeCartBtn = document.getElementById('close-cart');
+  const clearCartBtn = document.getElementById('clear-cart');
+
+  let CART = JSON.parse(localStorage.getItem('matraders_cart') || '[]');
+
+  function saveCart(){ localStorage.setItem('matraders_cart', JSON.stringify(CART)); }
+  function cartTotalCount(){ return CART.reduce((s,it)=>s+it.qty,0); }
+  function cartTotalPrice(){ return CART.reduce((s,it)=>s + (Number(it.price) * it.qty),0); }
+
+  function renderCart(){
+    const count = cartTotalCount();
+    $$('.cart-badge').forEach(el=> el.textContent = count);
+    const mobileBadge = document.getElementById('mobile-cart-count');
+    if(mobileBadge) mobileBadge.textContent = count;
+    if(!cartItemsContainer) return;
+    if(CART.length === 0){
+      cartItemsContainer.innerHTML = '<div class="p-4 text-muted-foreground">Cart is empty</div>';
+    } else {
+      cartItemsContainer.innerHTML = CART.map(item => `
+        <div class="flex items-center justify-between py-3 border-b">
+          <div>
+            <div class="font-semibold">${item.name}</div>
+            <div class="text-sm text-muted-foreground">₨ ${Number(item.price).toLocaleString()}</div>
+          </div>
+          <div class="flex items-center">
+            <button class="qty-btn" data-id="${item.id}" data-op="dec">-</button>
+            <div class="px-3">${item.qty}</div>
+            <button class="qty-btn" data-id="${item.id}" data-op="inc">+</button>
+          </div>
+        </div>
+      `).join('');
+    }
+    cartTotalEl.textContent = '₨ ' + cartTotalPrice().toLocaleString();
+  }
+
+  // open/close cart
+  function openCart(){ cartDrawer.classList.add('open'); }
+  function closeCart(){ cartDrawer.classList.remove('open'); }
+
+  if(cartBtn) cartBtn.addEventListener('click', openCart);
+  if(document.getElementById('mobile-cart-open')) document.getElementById('mobile-cart-open').addEventListener('click', function(){ openCart(); closeMobileMenu(); });
+  if(closeCartBtn) closeCartBtn.addEventListener('click', closeCart);
+  if(clearCartBtn) clearCartBtn.addEventListener('click', function(){ CART = []; saveCart(); renderCart(); });
+
+  // add to cart buttons
+  $$('.add-to-cart').forEach(btn => {
+    btn.addEventListener('click', function(e){
+      const id = this.dataset.id || ('p-' + Math.random().toString(36).slice(2,8));
+      const name = this.dataset.name || 'Product';
+      const price = Number(this.dataset.price || 0);
+      const existing = CART.find(it => it.id === id);
+      if(existing) existing.qty += 1; else CART.push({ id, name, price, qty: 1 });
+      saveCart(); renderCart(); openCart();
+    });
+  });
+
+  // delegate quantity buttons inside cart
+  cartItemsContainer && cartItemsContainer.addEventListener('click', function(e){
+    const b = e.target.closest('button[data-id]');
+    if(!b) return;
+    const id = b.dataset.id;
+    const op = b.dataset.op;
+    const idx = CART.findIndex(it => it.id === id);
+    if(idx === -1) return;
+    if(op === 'inc') { CART[idx].qty += 1; }
+    if(op === 'dec') { CART[idx].qty = Math.max(0, CART[idx].qty - 1); if(CART[idx].qty === 0) CART.splice(idx,1); }
+    saveCart(); renderCart();
+  });
+
+  // initialize
+  renderCart();
+
+  /* Modals: login/signup */
+  const modalLogin = document.getElementById('modal-login');
+  const modalSignup = document.getElementById('modal-signup');
+  const loginBtn = document.getElementById('login-btn');
+  const signupBtn = document.getElementById('signup-btn');
+  const loginClose = document.getElementById('login-close');
+  const signupClose = document.getElementById('signup-close');
+  if(loginBtn) loginBtn.addEventListener('click', () => { modalLogin.classList.add('show'); modalLogin.classList.add('show'); modalLogin.classList.add('show'); modalLogin.classList.add('show'); modalLogin.classList.add('show'); modalLogin.classList.add('show'); modalLogin.classList.add('show'); modalLogin.classList.add('show'); modalLogin.classList.add('show'); modalLogin.classList.add('show'); modalLogin.classList.add('show'); modalLogin.classList.add('show'); modalLogin.classList.add('show'); });
+  if(signupBtn) signupBtn.addEventListener('click', () => { modalSignup.classList.add('show'); });
+  if(loginClose) loginClose.addEventListener('click', () => { modalLogin.classList.remove('show'); });
+  if(signupClose) signupClose.addEventListener('click', () => { modalSignup.classList.remove('show'); });
+  if(mobileLogin) mobileLogin.addEventListener('click', () => { modalLogin.classList.add('show'); closeMobileMenu(); });
+  if(mobileSignup) mobileSignup.addEventListener('click', () => { modalSignup.classList.add('show'); closeMobileMenu(); });
+
+  // allow clicking on backdrop to close modals
+  modalLogin && modalLogin.addEventListener('click', (e) => { if(e.target === modalLogin) modalLogin.classList.remove('show'); });
+  modalSignup && modalSignup.addEventListener('click', (e) => { if(e.target === modalSignup) modalSignup.classList.remove('show'); });
+
+  /* Smooth fade-up on scroll for sections */
+  const observers = [];
+  const fadeElements = Array.from(document.querySelectorAll('section, .card, .p-6, .site-container > div'));
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting) {
+        entry.target.classList.add('show');
+      }
+    });
+  }, { threshold: 0.12 });
+  fadeElements.forEach(el => { el.classList.add('fade-up'); io.observe(el); });
+
+  // Keep mobile menu open after clicking links (per user request) - do nothing on link click to close
+  // but ensure anchors still navigate; so we don't attach click listeners that close menu.
+
+  // accessibility: close cart with Escape key and modals
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape'){ closeCart(); modalLogin && modalLogin.classList.remove('show'); modalSignup && modalSignup.classList.remove('show'); closeMobileMenu(); }
+  });
+
+  // Support cart checkout demo button
+  const checkoutBtn = document.getElementById('checkout-btn');
+  checkoutBtn && checkoutBtn.addEventListener('click', function(){ alert('Demo checkout — integrate payment / backend'); });
+})();
+</script>
+<!-- /INJECTED JS -->
+
+</body>
+</html>
